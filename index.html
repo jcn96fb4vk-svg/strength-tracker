@@ -37,9 +37,9 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:18px}
 <div class="stat"><span class="small">Trainingen voltooid</span><strong id="totalWorkouts">0</strong></div>
 <div class="stat"><span class="small">Oefeningen gelogd</span><strong id="totalSets">0</strong></div>
 </div>
-<div class="card"><div class="row"><h2>Start een training</h2><span class="pill">Kracht</span></div><div class="grid2"><button class="secondary" onclick="startWorkout('Upper body')">＋ Upper body</button><button class="secondary" onclick="startWorkout('Lower body')">＋ Lower body</button></div></div>
+<div class="card"><div class="row"><h2>Start een training</h2><span class="pill">Kracht</span></div><div class="grid2"><button class="secondary" onclick="startWorkout('Upper body')">＋ Upper body</button><button class="secondary" onclick="startWorkout('Lower body')">＋ Lower body</button></div><button class="secondary" style="width:100%;margin-top:9px" onclick="startWorkout('Full Body')">＋ Full Body</button></div>
 <div class="card"><h2>Laatste training</h2><div id="lastWorkout" class="muted small">Nog geen trainingen geregistreerd.</div></div>
-<div class="card"><h2>Jouw schema</h2><div class="exercise"><b>Upper body</b><div class="small">Bench press · Incline dumbbell press · Shoulder press · Lat pulldown · Seated row · Bicep curl · Tricep pushdown</div></div><div class="exercise"><b>Lower body</b><div class="small">Squat · Leg press · Romanian deadlift · Leg curl · Calf raises</div></div></div>
+<div class="card"><h2>Jouw schema</h2><div class="exercise"><b>Upper body</b><div class="small">Bench press · Incline dumbbell press · Shoulder press · Lat pulldown · Seated row · Bicep curl · Tricep pushdown</div></div><div class="exercise"><b>Lower body</b><div class="small">Squat · Leg press · Romanian deadlift · Leg curl · Calf raises</div></div><div class="exercise"><b>Full Body</b><div class="small">Squat · Bench press · Lat pulldown · Romanian deadlift · Shoulder press · Bicep curl · Tricep pushdown</div><div class="small green">3 × 8–12 (armen: 2 × 10–12)</div></div></div>
 </section>
 <section id="train" class="hidden">
 <div class="small">TRAININGSSESSIE</div><h1 id="workoutTitle">Workout</h1><p class="muted">Elke set wordt direct op dit toestel opgeslagen.</p>
@@ -64,8 +64,7 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:18px}
 const upper=['Bench press','Incline dumbbell press','Shoulder press','Lat pulldown','Seated cable row','Bicep curl','Tricep pushdown'];
 const lower=['Squat','Leg press','Romanian deadlift','Leg curl','Calf raises'];
 const full=['Squat','Bench press','Lat pulldown','Romanian deadlift','Shoulder press','Bicep curl','Tricep pushdown'];
-const all=[...new Set([...upper,...lower,...full])];const lower=['Squat','Leg press','Romanian deadlift','Leg curl','Calf raises'];
-const all=[...upper,...lower];
+const all=[...new Set([...upper,...lower,...full])];
 const KEY='strength-tracker-v1';
 let data=JSON.parse(localStorage.getItem(KEY)||'{"sessions":[],"active":null}');
 function save(){localStorage.setItem(KEY,JSON.stringify(data));render();}
