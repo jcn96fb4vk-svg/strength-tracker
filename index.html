@@ -63,6 +63,8 @@ footer{color:var(--muted);font-size:11px;text-align:center;padding:18px}
 <script>
 const upper=['Bench press','Incline dumbbell press','Shoulder press','Lat pulldown','Seated cable row','Bicep curl','Tricep pushdown'];
 const lower=['Squat','Leg press','Romanian deadlift','Leg curl','Calf raises'];
+const full=['Squat','Bench press','Lat pulldown','Romanian deadlift','Shoulder press','Bicep curl','Tricep pushdown'];
+const all=[...new Set([...upper,...lower,...full])];const lower=['Squat','Leg press','Romanian deadlift','Leg curl','Calf raises'];
 const all=[...upper,...lower];
 const KEY='strength-tracker-v1';
 let data=JSON.parse(localStorage.getItem(KEY)||'{"sessions":[],"active":null}');
