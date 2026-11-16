@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101114">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Strength">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<title>Strength Tracker</title>
+<style>
+:root{color-scheme:dark;--bg:#101114;--panel:#1b1d22;--panel2:#24272d;--line:#30333a;--muted:#a1a1aa;--text:#f5f5f7;--green:#8be6a2;--red:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 16px calc(92px + env(safe-area-inset-bottom));max-width:620px;margin-inline:auto}
+header{display:flex;justify-content:space-between;align-items:center;padding:20px 2px 18px}.brand{font-weight:850;letter-spacing:1.6px;font-size:22px}.sub{color:var(--muted);font-size:10px;letter-spacing:1.5px;margin-top:4px}.avatar{width:40px;height:40px;border-radius:50%;background:var(--panel2);display:grid;place-items:center;color:var(--green)}
+h1{font-size:30px;line-height:1.1;margin:6px 0 4px}h2{font-size:19px;margin:0 0 12px}h3{font-size:15px;margin:0}.muted{color:var(--muted)}.small{font-size:12px;color:var(--muted)}
+.tabs{display:flex;background:var(--panel);padding:4px;border-radius:14px;gap:3px;margin:8px 0 20px}.tabs button{flex:1;border:0;background:transparent;color:var(--muted);padding:11px 4px;border-radius:10px;font-weight:650}.tabs button.active{background:var(--panel2);color:white}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0}.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:14px}.stat strong{display:block;font-size:25px;margin-top:5px}.green{color:var(--green)}
+button,input,select{font:inherit}button{cursor:pointer}.primary{width:100%;border:0;border-radius:13px;padding:14px;background:var(--green);color:#102016;font-weight:750;margin-top:10px}.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:11px;padding:10px 13px}.danger{color:var(--red);background:transparent;border:0;padding:8px}
+label{display:block;font-size:12px;color:var(--muted);margin:12px 0 6px}input,select{width:100%;border:1px solid var(--line);background:var(--panel2);color:var(--text);border-radius:11px;padding:13px;outline:none}input:focus,select:focus{border-color:var(--green)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.row{display:flex;justify-content:space-between;align-items:center;gap:12px}.exercise{padding:13px 0;border-bottom:1px solid var(--line)}.exercise:last-child{border-bottom:0}.setline{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);gap:8px}.setline:last-child{border:0}.pill{font-size:11px;padding:5px 8px;border-radius:20px;background:#25362b;color:var(--green)}.hidden{display:none!important}.empty{text-align:center;padding:28px 10px;color:var(--muted)}.bottom{position:fixed;bottom:0;left:0;right:0;background:rgba(16,17,20,.94);backdrop-filter:blur(18px);padding:10px 16px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);display:flex;justify-content:center}.bottom span{font-size:11px;color:var(--muted)}
+nav{display:flex;max-width:620px;width:100%;margin:auto;gap:8px}nav button{flex:1;border:0;background:transparent;color:var(--muted);padding:8px 2px;font-size:11px}nav button.active{color:var(--green)}nav b{display:block;font-size:19px;margin-bottom:3px;font-weight:500}
+#toast{position:fixed;bottom:95px;left:50%;transform:translateX(-50%);background:#29372d;color:var(--green);padding:10px 15px;border-radius:30px;font-size:13px;opacity:0;transition:.2s;pointer-events:none}#toast.show{opacity:1}
+footer{color:var(--muted);font-size:11px;text-align:center;padding:18px}
+</style>
+</head>
+<body>
+<header><div><div class="brand">STRENGTH.</div><div class="sub">YOUR PERSONAL TRAINING LOG</div></div><div class="avatar">✦</div></header>
+<div class="tabs" role="tablist">
+<button class="active" data-tab="home">Overzicht</button><button data-tab="train">Workout</button><button data-tab="progress">Records</button>
+</div>
+<main>
+<section id="home">
+<div class="small">JOUW TRAINING</div><h1>Blijf sterker<br>worden.</h1><p class="muted">Houd je trainingen eenvoudig bij.</p>
+<div class="stats">
+<div class="stat"><span class="small">Trainingen voltooid</span><strong id="totalWorkouts">0</strong></div>
+<div class="stat"><span class="small">Oefeningen gelogd</span><strong id="totalSets">0</strong></div>
+</div>
+<div class="card"><div class="row"><h2>Start een training</h2><span class="pill">Kracht</span></div><div class="grid2"><button class="secondary" onclick="startWorkout('Upper body')">＋ Upper body</button><button class="secondary" onclick="startWorkout('Lower body')">＋ Lower body</button></div></div>
+<div class="card"><h2>Laatste training</h2><div id="lastWorkout" class="muted small">Nog geen trainingen geregistreerd.</div></div>
+<div class="card"><h2>Jouw schema</h2><div class="exercise"><b>Upper body</b><div class="small">Bench press · Incline dumbbell press · Shoulder press · Lat pulldown · Seated row · Bicep curl · Tricep pushdown</div></div><div class="exercise"><b>Lower body</b><div class="small">Squat · Leg press · Romanian deadlift · Leg curl · Calf raises</div></div></div>
+</section>
+<section id="train" class="hidden">
+<div class="small">TRAININGSSESSIE</div><h1 id="workoutTitle">Workout</h1><p class="muted">Elke set wordt direct op dit toestel opgeslagen.</p>
+<div class="card">
+<label for="exercise">Oefening</label><select id="exercise"></select>
+<div class="grid2"><div><label for="weight">Gewicht (kg)</label><input id="weight" type="number" inputmode="decimal" min="0" step="0.5" placeholder="Bijv. 60"></div><div><label for="reps">Herhalingen</label><input id="reps" type="number" inputmode="numeric" min="1" step="1" placeholder="Bijv. 10"></div></div>
+<button class="primary" id="addSet">＋ Set opslaan</button><div class="small" style="margin-top:8px">Automatisch opgeslagen op dit toestel zodra je op de knop drukt.</div>
+</div>
+<div class="card"><div class="row"><h2>Deze training</h2><span id="setCount" class="pill">0 sets</span></div><div id="sessionSets" class="empty">Voeg je eerste set toe.</div><button class="secondary" style="width:100%;margin-top:12px" id="finishWorkout">Training afronden</button></div>
+</section>
+<section id="progress" class="hidden">
+<div class="small">JOUW ONTWIKKELING</div><h1>Persoonlijke records.</h1><p class="muted">Zwaarste geregistreerde set per oefening.</p>
+<div class="card"><h2>Persoonlijke records</h2><div id="recordsList" class="empty">Nog geen records. Registreer een set om te beginnen.</div></div>
+<div class="card"><h2>Trainingsgeschiedenis</h2><div id="historyList" class="empty">Je afgeronde trainingen verschijnen hier.</div></div>
+<div class="card"><h2>Gegevens</h2><p class="small">Je gegevens worden lokaal in deze browser opgeslagen. Wis je browsergegevens niet als je je trainingshistorie wilt bewaren.</p><button class="secondary" id="exportData">Exporteer back-up (JSON)</button></div>
+</section>
+</main>
+<div id="toast">Set opgeslagen</div>
+<div class="bottom"><nav><button class="active" data-tab="home"><b>⌂</b>Home</button><button data-tab="train"><b>＋</b>Workout</button><button data-tab="progress"><b>↗</b>Records</button></nav></div>
+<footer>STRENGTH TRACKER · JOUW TRAINING, JOUW DATA</footer>
+<script>
+const upper=['Bench press','Incline dumbbell press','Shoulder press','Lat pulldown','Seated cable row','Bicep curl','Tricep pushdown'];
+const lower=['Squat','Leg press','Romanian deadlift','Leg curl','Calf raises'];
+const all=[...upper,...lower];
+const KEY='strength-tracker-v1';
+let data=JSON.parse(localStorage.getItem(KEY)||'{"sessions":[],"active":null}');
+function save(){localStorage.setItem(KEY,JSON.stringify(data));render();}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function toast(msg){let t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),1400)}
+function tab(name){document.querySelectorAll('main section').forEach(s=>s.classList.toggle('hidden',s.id!==name));document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===name));}
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>tab(b.dataset.tab)));
+function startWorkout(name){if(data.active && data.active.sets.length){if(!confirm('Er is al een training bezig. Deze training afronden en een nieuwe starten?'))return;finish(false);}
+data.active={name,started:new Date().toISOString(),sets:[]};save();tab('train');document.getElementById('workoutTitle').textContent=name;toast(name+' gestart');}
+function addSet(){if(!data.active){alert('Start eerst een training.');return;}let ex=document.getElementById('exercise').value,w=Number(document.getElementById('weight').value),r=Number(document.getElementById('reps').value);if(!Number.isFinite(w)||w<0||document.getElementById('weight').value===''||!Number.isInteger(r)||r<1){alert('Vul een geldig gewicht en minimaal 1 herhaling in.');return;}
+let previous=data.sessions.flatMap(s=>s.sets).filter(s=>s.exercise===ex).reduce((m,s)=>Math.max(m,s.weight),0);
+data.active.sets.push({exercise:ex,weight:w,reps:r,time:new Date().toISOString()});save();document.getElementById('weight').value='';document.getElementById('reps').value='';toast(w>previous?'Nieuw persoonlijk record!':'Set opgeslagen');}
+function finish(ask=true){if(!data.active)return;if(!data.active.sets.length){if(ask)alert('Voeg eerst een set toe.');return;}let s={...data.active,ended:new Date().toISOString()};data.sessions.unshift(s);data.active=null;save();tab('home');toast('Training afgerond en opgeslagen');}
+document.getElementById('addSet').addEventListener('click',addSet);
+document.getElementById('finishWorkout').addEventListener('click',()=>finish());
+function render(){
+document.getElementById('totalWorkouts').textContent=data.sessions.length;
+let allsets=[...data.sessions.flatMap(s=>s.sets),...(data.active?.sets||[])];
+document.getElementById('totalSets').textContent=allsets.length;
+let last=data.sessions[0];document.getElementById('lastWorkout').textContent=last?`${last.name} · ${new Date(last.ended).toLocaleDateString('nl-NL')} · ${last.sets.length} sets`:'Nog geen trainingen geregistreerd.';
+document.getElementById('workoutTitle').textContent=data.active?.name||'Workout';
+document.getElementById('setCount').textContent=(data.active?.sets.length||0)+' sets';
+let ss=document.getElementById('sessionSets');let cur=data.active?.sets||[];
+ss.className=cur.length?'':'empty';ss.innerHTML=cur.length?cur.map((s,i)=>`<div class="setline"><div><b>${esc(s.exercise)}</b><div class="small">Set ${i+1} · ${s.reps} herhalingen</div></div><b>${s.weight} kg</b></div>`).join(''):'Voeg je eerste set toe.';
+let best={};allsets.forEach(s=>{if(!best[s.exercise]||s.weight>best[s.exercise].weight||(s.weight===best[s.exercise].weight&&s.reps>best[s.exercise].reps))best[s.exercise]=s;});
+let entries=Object.entries(best).sort((a,b)=>a[0].localeCompare(b[0]));
+let rl=document.getElementById('recordsList');rl.className=entries.length?'':'empty';rl.innerHTML=entries.length?entries.map(([n,s])=>`<div class="setline"><div><b>${esc(n)}</b><div class="small">Beste geregistreerde set · ${s.reps} herhalingen</div></div><b class="green">${s.weight} kg</b></div>`).join(''):'Nog geen records. Registreer een set om te beginnen.';
+let hl=document.getElementById('historyList');hl.className=data.sessions.length?'':'empty';hl.innerHTML=data.sessions.length?data.sessions.map(s=>`<div class="exercise"><div class="row"><b>${esc(s.name)}</b><span class="small">${new Date(s.ended).toLocaleDateString('nl-NL')}</span></div><div class="small">${s.sets.length} sets · ${s.sets.map(x=>esc(x.exercise)).filter((v,i,a)=>a.indexOf(v)===i).join(', ')}</div></div>`).join(''):'Je afgeronde trainingen verschijnen hier.';
+}
+document.getElementById('exercise').innerHTML=all.map(x=>`<option>${esc(x)}</option>`).join('');
+document.getElementById('exportData').addEventListener('click',()=>{let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='strength-tracker-backup.json';a.click();URL.revokeObjectURL(url);});
+render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+</body></html>
